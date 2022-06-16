@@ -7,18 +7,21 @@ from form import preprocess_for_url,all_param_combinations,print_table
 from scrap_data import scrap_data
 import pandas as pd
 from csv_download import excel, convert_url_for_csv
+from email_sender import send_email
+from time import sleep
 # from st_aggrid import AgGrid
 
 st.set_page_config(page_title = "Grad Guide", layout='wide')
 def main_page():
-    def download(buffer):
-        button = st.download_button(
-            label="Download your Jobs",
-            data=buffer,
-            file_name="Jobs.xlsx",
-            mime="application/vnd.ms-excel"
-        )
-        return button
+    def email_df(df,email):
+        try:
+
+            send_email(df,email)
+            return True
+        except:
+            return False
+
+    st.title("Grad Guide")
     with st.sidebar:
         st.title("Enter your Search Criteria")
         with st.form("my_form"):
@@ -43,13 +46,14 @@ def main_page():
                  'Wicklow']
                 ,
                 [])
-
+            email = st.text_input("Enter your email address to recieve the results")
             # Every form must have a submit button.
             submitted = st.form_submit_button("Submit")
     if submitted:
         if resume is not None:
             key_phrases = process_resume(resume,5-len(job))
             job.extend(key_phrases)
+
 
         job = preprocess_for_url(job)
         query_data = all_param_combinations(job, location)
@@ -59,10 +63,12 @@ def main_page():
         df = pd.concat(job_dataframes)
         df = df.drop_duplicates(
             ["job_title", "job_company", "job_location", "job_summary", "job_additional_info", "job_date",
-             "current_date"], keep='first')
+             "current_date"], keep='first').reset_index(drop=True)
         print_table(df.head(5))
-        df = convert_url_for_csv(df)
-        buffer = excel(df)
+        if email is not None:
+            email_df(df,email)
+        df_csv = convert_url_for_csv(df)
+        buffer = excel(df_csv)
         with st.sidebar:
             st.download_button(
                 label="Download your Jobs",
@@ -70,6 +76,9 @@ def main_page():
                 file_name="Jobs.xlsx",
                 mime="application/vnd.ms-excel"
             )
+
+
+
 
 
 
