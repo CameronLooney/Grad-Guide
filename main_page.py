@@ -2,14 +2,23 @@
 
 import streamlit as st
 from streamlit_tags import st_tags
-from resume_parser import keyphrases, process_resume
+from resume_parser import process_resume
 from form import preprocess_for_url,all_param_combinations,print_table
 from scrap_data import scrap_data
 import pandas as pd
-from st_aggrid import AgGrid
+from csv_download import excel, convert_url_for_csv
+# from st_aggrid import AgGrid
 
 st.set_page_config(page_title = "Grad Guide", layout='wide')
 def main_page():
+    def download(buffer):
+        button = st.download_button(
+            label="Download your Jobs",
+            data=buffer,
+            file_name="Jobs.xlsx",
+            mime="application/vnd.ms-excel"
+        )
+        return button
     with st.sidebar:
         st.title("Enter your Search Criteria")
         with st.form("my_form"):
@@ -41,6 +50,7 @@ def main_page():
         if resume is not None:
             key_phrases = process_resume(resume,5-len(job))
             job.extend(key_phrases)
+
         job = preprocess_for_url(job)
         query_data = all_param_combinations(job, location)
         job_dataframes = []
@@ -50,7 +60,22 @@ def main_page():
         df = df.drop_duplicates(
             ["job_title", "job_company", "job_location", "job_summary", "job_additional_info", "job_date",
              "current_date"], keep='first')
-        print_table(df)
+        print_table(df.head(5))
+        df = convert_url_for_csv(df)
+        buffer = excel(df)
+        with st.sidebar:
+            st.download_button(
+                label="Download your Jobs",
+                data=buffer,
+                file_name="Jobs.xlsx",
+                mime="application/vnd.ms-excel"
+            )
+
+
+
+
+
+
 
 
 
