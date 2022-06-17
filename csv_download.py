@@ -25,11 +25,11 @@ def excel(excl_merged):
 
 
 def process_url_for_csv(row):
-    row["job_link"] = re.split(r'((?:<a href=")?https?://\S+[^\s,.:;])(?:><div)', row["job_link"])[1]
-    return row['job_link']
+    row["Job Link"] = re.split(r'((?:<a href=")?https?://\S+[^\s,.:;])(?:><div)', row["Job Link"])[1]
+    return row['Job Link']
 
 def convert_url_for_csv(df):
-    df["job_link"] = df.apply(process_url_for_csv, axis=1)
+    df["Job Link"] = df.apply(process_url_for_csv, axis=1)
     return df
 
 

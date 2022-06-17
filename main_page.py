@@ -52,7 +52,7 @@ def main_page():
     if submitted:# if the submit button is pressed
         if location is None:
             st.error("Please select at least one location") # if there is no location, show an error
-        if job and resume is None:
+        if job is None and resume is None:
             st.error("Please enter at least one job title or update a CV") # if there is no job title, show an error
         if resume is not None:
             key_phrases = process_resume(resume,5-len(job)) # get the key phrases from the resume
