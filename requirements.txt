@@ -1,0 +1,9 @@
+streamlit
+streamlit_tags
+pandas
+openpyxl
+requests
+bs4
+datetime
+rake_nltk
+PyPDF2
