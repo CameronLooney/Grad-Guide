@@ -23,6 +23,7 @@ def send_email(df,email):
     <html>
       <head></head>
       <body>
+      Thank you for using using Grad Guide. Here are the best fitting jobs for you:
         {0}
       </body>
     </html>

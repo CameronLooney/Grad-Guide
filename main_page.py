@@ -21,7 +21,7 @@ def main_page():
         except:
             return False
 
-    st.title("Grad Guide") # set the title of the page
+    st.title("Grad Guide",page_icon="chart_with_upwards_trend") # set the title of the page
     with st.sidebar:
         st.title("Enter your Search Criteria")
         with st.form("my_form"):
