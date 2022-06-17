@@ -81,25 +81,25 @@ def scrap_data(job,location):
         '''
         data = fetch_data(job,location) # get the data
         df = pd.DataFrame(data,
-                          columns=["job_title", "job_company", "job_location", "job_summary", "job_additional_info",
-                                   "job_date", "current_date", "job_link"]) # convert the data to a dataframe
+                          columns=["Job Title", "Job Company", "Job Location", "Job Summary", "Job Additional Info",
+                                   "Job Date", "Current Date", "Job Link"]) # convert the data to a dataframe
         df = df.drop_duplicates(
-            ["job_title", "job_company", "job_location", "job_summary", "job_additional_info", "job_date",
-             "current_date"], keep='first') # drop duplicates
+            ["Job Title", "Job Company", "Job Location", "Job Summary", "Job Additional Info","Job Date",
+             "Current Date"], keep='first') # drop duplicates
         return df
 
     def set_current_date():
         df = convert_to_df() # get the dataframe
         todays_date = datetime.today().strftime('%d/%m/%Y') # get the current date
-        df_complete = df[df['current_date'] == todays_date].reset_index(drop=True) # get the jobs from the current date
+        df_complete = df[df['Current Date'] == todays_date].reset_index(drop=True) # get the jobs from the current date
         return df_complete # return the jobs from the current date
 
 
     def drop_old_jobs():
         df_complete = set_current_date()
-        df_complete = df_complete[~df_complete['job_date'].isin(['Posted30+ days ago'])] # drop the jobs that are posted 30+ days ago
-        df_complete['job_link'] = '<a href=' + df_complete['job_link'] +\
-                                  '><div>' + df_complete['job_company'] + '</div></a>' # add a link to the job company
+        df_complete = df_complete[~df_complete['Job Date'].isin(['Posted30+ days ago'])] # drop the jobs that are posted 30+ days ago
+        df_complete['Job Link'] = '<a href=' + df_complete['Job Link'] +\
+                                  '><div>' + df_complete['Job Company'] + '</div></a>' # add a link to the job company
         return df_complete
     df = drop_old_jobs()
     return df

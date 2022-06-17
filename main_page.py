@@ -66,8 +66,8 @@ def main_page():
            job_dataframes.append(scrap_data(query[0], query[1])) # get the data from the website
         df = pd.concat(job_dataframes) # concatenate all the dataframes
         df = df.drop_duplicates(
-            ["job_title", "job_company", "job_location", "job_summary", "job_additional_info", "job_date",
-             "current_date"], keep='first').reset_index(drop=True) # drop duplicates and reset the index
+            ["Job Title", "Job Company", "Job Location", "Job Summary", "Job Additional Info", "Job Date",
+             "Current Date"], keep='first').reset_index(drop=True) # drop duplicates and reset the index
         print_table(df.head(5))
         if email is not None:
             email_df(df,email) # send the dataframe to the email address
