@@ -50,38 +50,40 @@ def main_page():
             # Every form must have a submit button.
             submitted = st.form_submit_button("Submit")
     if submitted:# if the submit button is pressed
-        with st.spinner("Lucky for you there seems to be alot of jobs! We are processing your request..."):
-            if location is None:
-                st.error("Please select at least one location") # if there is no location, show an error
-            if job is None and resume is None:
-                st.error("Please enter at least one job title or update a CV") # if there is no job title, show an error
-            if resume is not None:
-                key_phrases = process_resume(resume,5-len(job)) # get the key phrases from the resume
-                job.extend(key_phrases) # add the key phrases to the job title
+        try:
+            with st.spinner("Lucky for you there seems to be alot of jobs! We are processing your request..."):
+                if location is None:
+                    st.error("Please select at least one location") # if there is no location, show an error
+                if job is None and resume is None:
+                    st.error("Please enter at least one job title or update a CV") # if there is no job title, show an error
+                if resume is not None:
+                    key_phrases = process_resume(resume,5-len(job)) # get the key phrases from the resume
+                    job.extend(key_phrases) # add the key phrases to the job title
 
 
-            job = preprocess_for_url(job) # preprocess the job title and location
-            query_data = all_param_combinations(job, location) # get all the combinations of job title and location
-            job_dataframes = []
-            for query in query_data:
-               job_dataframes.append(scrap_data(query[0], query[1])) # get the data from the website
-            df = pd.concat(job_dataframes) # concatenate all the dataframes
-            df = df.drop_duplicates(
-                ["Job Title", "Job Company", "Job Location", "Job Summary", "Job Additional Info", "Job Date",
-                 "Current Date"], keep='first').reset_index(drop=True) # drop duplicates and reset the index
-            print_table(df.head(5))
-            if email is not None:
-                email_df(df,email) # send the dataframe to the email address
-            df_csv = convert_url_for_csv(df) # convert the dataframe to csv
-            buffer = excel(df_csv) # convert the dataframe to excel
-            with st.sidebar:
-                st.download_button(
-                    label="Download your Jobs",
-                    data=buffer,
-                    file_name="Jobs.xlsx",
-                    mime="application/vnd.ms-excel"
-                ) # download the dataframe to excel
-
+                job = preprocess_for_url(job) # preprocess the job title and location
+                query_data = all_param_combinations(job, location) # get all the combinations of job title and location
+                job_dataframes = []
+                for query in query_data:
+                   job_dataframes.append(scrap_data(query[0], query[1])) # get the data from the website
+                df = pd.concat(job_dataframes) # concatenate all the dataframes
+                df = df.drop_duplicates(
+                    ["Job Title", "Job Company", "Job Location", "Job Summary", "Job Additional Info", "Job Date",
+                     "Current Date"], keep='first').reset_index(drop=True) # drop duplicates and reset the index
+                print_table(df.head(5))
+                if email is not None:
+                    email_df(df,email) # send the dataframe to the email address
+                df_csv = convert_url_for_csv(df) # convert the dataframe to csv
+                buffer = excel(df_csv) # convert the dataframe to excel
+                with st.sidebar:
+                    st.download_button(
+                        label="Download your Jobs",
+                        data=buffer,
+                        file_name="Jobs.xlsx",
+                        mime="application/vnd.ms-excel"
+                    ) # download the dataframe to excel
+        except:
+            st.error("We are sorry, something went wrong. Please try again :(")
 
 
 
