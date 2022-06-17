@@ -7,4 +7,4 @@ bs4
 datetime
 rake_nltk
 PyPDF2
-
+xlsxwriter
