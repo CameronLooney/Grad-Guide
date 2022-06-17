@@ -18,6 +18,7 @@ def preprocess_for_url(list):
     return list
 
 def print_table(df):
+    st.subheader("Table Example")
     df["key"] = df["Job Title"]+df["Job Company"]+df["Job Location"]
     # drop duplicates based on key keep first
     df = df.drop_duplicates(["key"], keep='first')
